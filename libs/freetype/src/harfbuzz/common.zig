@@ -17,7 +17,7 @@ pub const Direction = enum(u3) {
     }
 };
 
-pub const Script = enum(u31) {
+pub const Script = enum(c_uint) {
     common = c.HB_SCRIPT_COMMON,
     inherited = c.HB_SCRIPT_INHERITED,
     unknown = c.HB_SCRIPT_UNKNOWN,

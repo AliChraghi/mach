@@ -31,17 +31,11 @@ pub fn deinit(self: Library) void {
 }
 
 pub fn createFace(self: Library, path: [*:0]const u8, face_index: i32) Error!Face {
-    return self.openFace(.{
-        .flags = .{ .path = true },
-        .data = .{ .path = path },
-    }, face_index);
+    return self.openFace(.{ .path = path }, face_index);
 }
 
 pub fn createFaceMemory(self: Library, bytes: []const u8, face_index: i32) Error!Face {
-    return self.openFace(.{
-        .flags = .{ .memory = true },
-        .data = .{ .memory = bytes },
-    }, face_index);
+    return self.openFace(.{ .memory = bytes }, face_index);
 }
 
 pub fn openFace(self: Library, args: OpenArgs, face_index: i32) Error!Face {

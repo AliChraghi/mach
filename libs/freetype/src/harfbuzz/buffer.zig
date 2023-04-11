@@ -17,7 +17,7 @@ pub const ClusterLevel = enum(u2) {
     characters = c.HB_BUFFER_CLUSTER_LEVEL_CHARACTERS,
 };
 
-pub const SerializeFormat = enum(u31) {
+pub const SerializeFormat = enum(c_int) {
     text = c.HB_BUFFER_SERIALIZE_FORMAT_TEXT,
     json = c.HB_BUFFER_SERIALIZE_FORMAT_JSON,
     invalid = c.HB_BUFFER_SERIALIZE_FORMAT_INVALID,
@@ -172,23 +172,23 @@ pub const Buffer = struct {
         c.hb_buffer_add(self.handle, codepoint, cluster);
     }
 
-    pub fn addCodepoints(self: Buffer, text: []const u32, item_offset: u32, item_length: ?u31) void {
+    pub fn addCodepoints(self: Buffer, text: []const u32, item_offset: u32, item_length: ?c_int) void {
         c.hb_buffer_add_codepoints(self.handle, &text[0], @intCast(c_int, text.len), item_offset, if (item_length) |l| l else @intCast(c_int, text.len));
     }
 
-    pub fn addUTF32(self: Buffer, text: []const u32, item_offset: u32, item_length: ?u31) void {
+    pub fn addUTF32(self: Buffer, text: []const u32, item_offset: u32, item_length: ?c_int) void {
         c.hb_buffer_add_utf32(self.handle, &text[0], @intCast(c_int, text.len), item_offset, if (item_length) |l| l else @intCast(c_int, text.len));
     }
 
-    pub fn addUTF16(self: Buffer, text: []const u16, item_offset: u32, item_length: ?u31) void {
+    pub fn addUTF16(self: Buffer, text: []const u16, item_offset: u32, item_length: ?c_int) void {
         c.hb_buffer_add_utf16(self.handle, &text[0], @intCast(c_int, text.len), item_offset, if (item_length) |l| l else @intCast(c_int, text.len));
     }
 
-    pub fn addUTF8(self: Buffer, text: []const u8, item_offset: u32, item_length: ?u31) void {
+    pub fn addUTF8(self: Buffer, text: []const u8, item_offset: u32, item_length: ?c_int) void {
         c.hb_buffer_add_utf8(self.handle, &text[0], @intCast(c_int, text.len), item_offset, if (item_length) |l| l else @intCast(c_int, text.len));
     }
 
-    pub fn addLatin1(self: Buffer, text: []const u8, item_offset: u32, item_length: ?u31) void {
+    pub fn addLatin1(self: Buffer, text: []const u8, item_offset: u32, item_length: ?c_int) void {
         c.hb_buffer_add_latin1(self.handle, &text[0], @intCast(c_int, text.len), item_offset, if (item_length) |l| l else @intCast(c_int, text.len));
     }
 

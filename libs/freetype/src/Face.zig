@@ -59,17 +59,11 @@ pub fn deinit(self: Face) void {
 }
 
 pub fn attachFile(self: Face, path: [*:0]const u8) Error!void {
-    return self.attachStream(.{
-        .flags = .{ .path = true },
-        .data = .{ .path = path },
-    });
+    return self.attachStream(.{ .path = path });
 }
 
 pub fn attachMemory(self: Face, bytes: []const u8) Error!void {
-    return self.attachStream(.{
-        .flags = .{ .memory = true },
-        .data = .{ .memory = bytes },
-    });
+    return self.attachStream(.{ .memory = bytes });
 }
 
 pub fn attachStream(self: Face, args: OpenArgs) Error!void {

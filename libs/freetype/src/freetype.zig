@@ -37,7 +37,7 @@ pub const SizeRequestType = enum(u3) {
     max = c.FT_SIZE_REQUEST_TYPE_MAX,
 };
 
-pub const Encoding = enum(u31) {
+pub const Encoding = enum(c_uint) {
     none = c.FT_ENCODING_NONE,
     ms_symbol = c.FT_ENCODING_MS_SYMBOL,
     unicode = c.FT_ENCODING_UNICODE,
@@ -155,35 +155,42 @@ pub const OpenFlags = packed struct(c_int) {
     params: bool = false,
     _padding: u27 = 0,
 };
-pub const OpenArgs = struct {
-    flags: OpenFlags,
-    data: union(enum) {
-        memory: []const u8,
-        path: [*:0]const u8,
-        stream: c.FT_Stream,
-        driver: c.FT_Module,
-        params: []const c.FT_Parameter,
-    },
+pub const OpenArgs = union(enum) {
+    memory: []const u8,
+    path: [*:0]const u8,
+    stream: c.FT_Stream,
+    driver: c.FT_Module,
+    params: []const c.FT_Parameter,
 
     pub fn cast(self: OpenArgs) c.FT_Open_Args {
-        var oa: c.FT_Open_Args = undefined;
-        oa.flags = @bitCast(u32, self.flags);
-        switch (self.data) {
+        var args: c.FT_Open_Args = undefined;
+        switch (self) {
             .memory => |d| {
-                oa.memory_base = d.ptr;
-                oa.memory_size = @intCast(u31, d.len);
+                args.flags = @bitCast(c_uint, OpenFlags{ .memory = true });
+                args.memory_base = d.ptr;
+                args.memory_size = @intCast(c_int, d.len);
             },
             // The Freetype API requires a mutable string.
             // This is an oversight, Freetype actually never writes to this string.
-            .path => |d| oa.pathname = @constCast(d),
-            .stream => |d| oa.stream = d,
-            .driver => |d| oa.driver = d,
+            .path => |d| {
+                args.flags = @bitCast(c_uint, OpenFlags{ .path = true });
+                args.pathname = @constCast(d);
+            },
+            .stream => |d| {
+                args.flags = @bitCast(c_uint, OpenFlags{ .stream = true });
+                args.stream = d;
+            },
+            .driver => |d| {
+                args.flags = @bitCast(c_uint, OpenFlags{ .driver = true });
+                args.driver = d;
+            },
             .params => |*d| {
-                oa.params = @intToPtr(*c.FT_Parameter, @ptrToInt(d.ptr));
-                oa.num_params = @intCast(u31, d.len);
+                args.flags = @bitCast(c_uint, OpenFlags{ .params = true });
+                args.params = @constCast(d.ptr);
+                args.num_params = @intCast(c_int, d.len);
             },
         }
-        return oa;
+        return args;
     }
 };
 
