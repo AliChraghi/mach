@@ -118,6 +118,7 @@ pub const Buffer = struct {
         do_not_insert_dotted_circle: bool = false,
         verify: bool = false,
         produce_unsafe_to_concat: bool = false,
+        produce_safe_to_insert_tatweel: bool = false,
         _padding: u25 = 0,
     };
 

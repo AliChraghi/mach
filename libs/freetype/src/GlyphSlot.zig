@@ -103,3 +103,11 @@ pub fn getGlyph(self: GlyphSlot) Error!Glyph {
     try intToError(c.FT_Get_Glyph(self.handle, &res));
     return Glyph{ .handle = res };
 }
+
+// pub fn adjustWeight(self: GlyphSlot, x_delta: i32, y_delta: i32) Error!Glyph {
+//     c.FT_GlyphSlot_AdjustWeight(self.handle, x_delta, y_delta);
+// }
+
+// pub fn slant(self: GlyphSlot, x_slant: i32, y_slant: i32) Error!Glyph {
+//     c.FT_GlyphSlot_AdjustWeight(self.handle, x_slant, y_slant);
+// }
